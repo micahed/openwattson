@@ -102,6 +102,10 @@ This is part of the common function library and contains all the platform
 unique functions. These files contains the functions that are special for
 Linux. 
 
+index.php
+This is a sample page to place in the location that solar_web.sh is placing the HTML files. It will
+look for all relevant files, and sort them into sections - This month, last month, this year and earlier.
+It will then fold these using jQuery (grabbed from the web)
 
 Alan Wood (coder@woodysoft.co.uk), Kary Främling (Kary.Framling@gmail.com), Jan Nyman (Jan.Nyman@iki.fi)
 
