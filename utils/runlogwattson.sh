@@ -10,9 +10,11 @@
 #
 # Author: Kary Främling, 2010
 #
+LogBase="/home/nas/wattson/wattson/wattson_log"
 while [ 1 ]
 do
-  ../logwattson wattson_log.txt
-  sleep 5
+  today=`date +%Y_%m_%d_%A`
+  /usr/local/bin/logwattson $LogBase-$today.txt &
+  sleep 10
 done
 

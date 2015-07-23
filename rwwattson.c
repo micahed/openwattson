@@ -52,17 +52,17 @@ int get_current_power_with_retry(WATTSON wattson)
  ********************************************************************/
 int get_current_generated_power_with_retry(WATTSON wattson)
 {
-        int power;
+        int genpower;
         int i;
 
         for ( i=0 ; i<MAXRETRIES ; i++ ) {
-                power = get_current_generated_power(wattson);
-                if ( power >= 0 )
+                genpower = get_current_generated_power(wattson);
+                if ( genpower >= 0 )
                         break;
                 mySleep(500000); // Give enough time for recovering
         }
 
-        return power;
+        return genpower;
 }
 
 /********************************************************************/
@@ -87,25 +87,47 @@ int get_current_power(WATTSON wattson)
 	//char cmd[] = "nowA00009 00\n";
 	char result[REPLY_BUF_SIZE];
 	unsigned int power = 0;
+        unsigned int readbytes = 0;
+        unsigned int loop = 0;
 
 	tcflush(wattson, TCIOFLUSH); // Flush everything just in case
 
 	if (writeport(wattson, cmd) <= 0)
 		return(-1);
 
-	mySleep(500000); // Give enough time for replying
+        while (readbytes == 0) {
+           loop = loop + 1;
+           mySleep(5000); // Give enough time for replying
+           bzero(result, REPLY_BUF_SIZE);  // Clear the buffer before readport
+
+           readbytes = readport(wattson, result);
+
+           if ( result[0] == 'w' ) {
+                sscanf(result+1, "%x", &power);
+           }
+           else {
+                   power=-3;
+           }
+           if (( readbytes == 0 ) && (loop == 100)) {
+                   power = -2;
+                   readbytes = 1;
+           }
+        }
+
+	/*mySleep(500000); // Give enough time for replying
     bzero(result, REPLY_BUF_SIZE);  // Clear the buffer before readport
 
- 	if (readport(wattson, result) <= 0)
+	if (readport(wattson, result) <= 0)
 		return(-2);
-	if ( result[0] == 'p' ) {		
+
+	if ( result[0] == 'p' ) {
 		sscanf(result+1, "%x", &power);
 	}
 	else {
 		return(-3); // Error in power value
-	}
+	}*/
 
-	return power;
+	return power*4;  // Odd fudge needed to get the values correct on my system. Works, but don't know why.
 }
 
 /********************************************************************/
@@ -121,29 +143,54 @@ int get_current_generated_power(WATTSON wattson)
 {
         char cmd[] = "noww";
         //char cmd[] = "nowA00009 00\n";
-        char result[REPLY_BUF_SIZE];
-        unsigned int power = 0;
+        char genresult[REPLY_BUF_SIZE];
+        int genpower = -2;
+	unsigned int readbytes = 0;
+	unsigned int loop = 0;
 
         tcflush(wattson, TCIOFLUSH); // Flush everything just in case
 
         if (writeport(wattson, cmd) <= 0)
                 return(-1);
 
-        mySleep(500000); // Give enough time for replying
-    bzero(result, REPLY_BUF_SIZE);  // Clear the buffer before readport
+	while (readbytes == 0) {
+	   loop = loop + 1;
+           mySleep(5000); // Give enough time for replying
+           bzero(genresult, REPLY_BUF_SIZE);  // Clear the buffer before readport
 
-        if (readport(wattson, result) < 0)
+           //if (readport(wattson, genresult) <= 0)
+           //     return(-2);
+	   readbytes = readport(wattson, genresult);
+
+           if ( genresult[0] == 'w' ) {
+                sscanf(genresult+1, "%x", &genpower);
+           }
+           else {
+           //        return(-3); // Error in power value
+	           genpower=-3;
+           }
+	   if (( readbytes == 0 ) && (loop == 100)) {
+		   genpower = -2;
+		   readbytes = 1;
+	   }
+	}
+        return genpower;
+}
+        /*mySleep(500000); // Give enough time for replying
+    bzero(genresult, REPLY_BUF_SIZE);  // Clear the buffer before readport
+
+        if (readport(wattson, genresult) <= 0)
                 return(-2);
-        if ( result[0] == 'w' ) {
-                 sscanf(result+1, "%x", &power);
+        if ( genresult[0] == 'w' ) {
+                sscanf(genresult+1, "%x", &genpower);
         }
-         else {
+        else {
                 return(-3); // Error in power value
         }
 
-        return power;
+        return genpower;
 }
-
+*/
 
 /********************************************************************
  * get_configuration()

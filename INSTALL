@@ -34,5 +34,5 @@ chmod 766 /dev/ttyS1
 will give access to everyone for COM2.
 
 Note: Also read the README
-
+Many of the support scripts also need some confiuration at this time in development, these are covered in README
 

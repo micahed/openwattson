@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
 	char logline[3000] = "";
 	char datestring[50];        //used to hold the date stamp for the log file
 	int current_power; 
+	int current_generated_power;
 	struct config_type config;
 	time_t basictime;
 
@@ -77,7 +78,8 @@ int main(int argc, char *argv[])
 
 	/* Read power value */
 	current_power = get_current_power_with_retry(wattson);
-	sprintf(logline,"%s%d ", logline, current_power);
+	current_generated_power = get_current_generated_power_with_retry(wattson);
+	sprintf(logline,"%s%d %d ", logline, current_power, current_generated_power);
 
 	/* Get date and time for log file, place before all data in log line. */
 	time(&basictime);

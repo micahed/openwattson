@@ -1,10 +1,13 @@
 openwattson
 
-version 0.1
+version 0.1 - InRong Fork
 
 Copyright 2010 by Kary Främling, Jan Nyman
+Copyright 2015 by Alan Wood
 This program is published under the GNU General Public License version 2.0
 or later. Please read the file 'COPYING' for more info.
+
+This fork is entirely based on all the work of Kary Främling and Jan Nyman for the original version, with any tweaks needed to make it fit my personal needs
 
 This Openwattson package is largely inspired from Kenneth Lavrsen's open2300 package for connecting to the LaCrosse Weather station. The authors hereby express their gratitude to the work done by Kenneth Lavrsen, which provided a nice initial framework. Still, large parts of the source code have been modified due to the differences in information and communication logic between the weather station and Wattson. 
 
@@ -35,32 +38,59 @@ Utility tools in the 'utils' directory:
 
 runlogwattson.sh
 Shell script that runs an eternal loop with 'logwattson', then sleeping. 
-The default sleeping time is 5 seconds. If you want this program to be 
+The default sleeping time is 10 seconds. If you want this program to be 
 automatically started at system startup, then put it into the appropriate 
 directories under '/etc'. If you want to start it from a shell and keep it 
 running when you exit the shell (or log out), then use e.g.
 'nohup ./runlogwattson.sh &'. 
+Also see the logwattson.init.d file below if you want to add it into init startup
+so that is logs always.
 
 currentWattsonAsHTML.sh
-Shell script that gets the current power reading from the Wattson energy
-meter and creates a simple HTML file for showing it. The name of the file 
-to create is given as the first command line parameter. This shell script 
-is meant to be executed e.g. once per minute, which can be done e.g. by 
-adding the line "0-59/1 * * * * root /home/kary/openwattson/utils/currentWattsonAsHTML.sh /var/www/wattson_out.html" to /etc/crontab (/var/www/wattson_out.html is 
-the output file). 
-If the name of an image file (e.g.one produced by 'wattsonplot') is given as 
-the second parameter, then that image is included in the page (if it exists). 
+Best run from solar_web.sh
+Shell script that creates a web page from the logged data for the previous day
+It reads the logfile and crates an HTML file for showing the data. 
+The name of the file to create is given as the first command line parameter.
+The filename of a graph of the Used power is the second parameter. (optional)
+The filename of a graph of the generated power is the third parameter. (optional)
+The filename of a graph of the difference of the above 2 is the fourth parameter. (optional)
+This shell script is meant to be executed once per day, which can be done e.g. by 
+adding the line "1 0 * * * root /home/kary/openwattson/utils/currentWattsonAsHTML.sh /var/www/wattson_out.html" 
+to /etc/crontab (/var/www/wattson_out.html is the output file). 
+This version also calls the analysesolar_web.sh script to give an analysis of the
+data in the logfiles.
+
+solar_web.sh
+Shell script to automate the generation of the plots, and creation of the daily HTML file.
+This needs the following variables set :
+basedir : The directory that you want the html files to be placed into.
+logfile : The directory portion needs to be set to where the logfiles are kept.
+This does need further work as this should be in the config file, but not yet....
+
+analysesolar_web.sh
+Intended to be run from currentWattsonAsHTML.sh
+This outputs an html table to stdout based on the temporary file created in the currentWattsonAsHTML.sh script.
+Probably should be more general or integrated into the above script, but does allow testing also by giving a date
+as the first parameter, but it also relies on my file locations for this in this version. At the moment the date
+is of the format yyyy_mm_dd_dow where dow is the full day of the week with a capitalised first letter. This is the 
+format that the logfiles are stored in the log directory. 
 
 wattsonplot.sh
 Shell script that takes 'nrows' last values from logwattson log file and 
-creates a PNG file with a date-time vs. power plot. 
+creates a PNG file with a date-time vs. power plot. Intended to be called from solar_web.sh.
 Parameters
 - Name of log file (compulsory)
-- Name of PNG file to create (compulsory)
-- Number of rows to include from the end of the file (optional; default is 5000)
-The appropriate number of rows to use depends on the sampling interval used.
+- Name of Used Power PNG file to create (compulsory)
+- Name of Generatd Power PNG file to create (compulsory)
+- Name of Power differential PNG file to create (compulsory)
 The 'ploticus' package is required for this script to work 
 # (do 'sudo apt-get ploticus' or similar if needed). 
+
+logwattson.init.d
+This script is intended to be added to the init.d and linked from the runlevel directories /etc/rc?.d
+It does need some customising still.
+maindir : The directory that the runlogwattson.sh script above is kept in
+Note that is also creates a pidfile in this directory, not ideal placement, but works...
 
 Other files:
 
@@ -73,5 +103,5 @@ unique functions. These files contains the functions that are special for
 Linux. 
 
 
-Kary Främling (Kary.Framling@gmail.com), Jan Nyman (Jan.Nyman@iki.fi)
+Alan Wood (coder@woodysoft.co.uk), Kary Främling (Kary.Framling@gmail.com), Jan Nyman (Jan.Nyman@iki.fi)
 
