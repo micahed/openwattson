@@ -87,21 +87,21 @@ int get_current_power(WATTSON wattson)
 	//char cmd[] = "nowA00009 00\n";
 	char result[REPLY_BUF_SIZE];
 	unsigned int power = 0;
-        unsigned int readbytes = 0;
-        unsigned int loop = 0;
+        //unsigned int readbytes = 0;
+        //unsigned int loop = 0;
 
 	tcflush(wattson, TCIOFLUSH); // Flush everything just in case
 
 	if (writeport(wattson, cmd) <= 0)
 		return(-1);
-
+/*
         while (readbytes == 0) {
            loop = loop + 1;
            mySleep(5000); // Give enough time for replying
            bzero(result, REPLY_BUF_SIZE);  // Clear the buffer before readport
 
            readbytes = readport(wattson, result);
-
+printf("loop %d, readbytes %d\n", loop, readbytes);
            if ( result[0] == 'w' ) {
                 sscanf(result+1, "%x", &power);
            }
@@ -113,8 +113,8 @@ int get_current_power(WATTSON wattson)
                    readbytes = 1;
            }
         }
-
-	/*mySleep(500000); // Give enough time for replying
+*/
+	mySleep(50000); // Give enough time for replying
     bzero(result, REPLY_BUF_SIZE);  // Clear the buffer before readport
 
 	if (readport(wattson, result) <= 0)
@@ -125,7 +125,7 @@ int get_current_power(WATTSON wattson)
 	}
 	else {
 		return(-3); // Error in power value
-	}*/
+	}
 
 	return power*4;  // Odd fudge needed to get the values correct on my system. Works, but don't know why.
 }
@@ -145,23 +145,23 @@ int get_current_generated_power(WATTSON wattson)
         //char cmd[] = "nowA00009 00\n";
         char genresult[REPLY_BUF_SIZE];
         int genpower = -2;
-	unsigned int readbytes = 0;
-	unsigned int loop = 0;
+	//unsigned int readbytes = 0;
+	//unsigned int loop = 0;
 
         tcflush(wattson, TCIOFLUSH); // Flush everything just in case
 
         if (writeport(wattson, cmd) <= 0)
                 return(-1);
 
+        /* bzero(genresult, REPLY_BUF_SIZE);  // Clear the buffer before readport
 	while (readbytes == 0) {
-	   loop = loop + 1;
-           mySleep(5000); // Give enough time for replying
-           bzero(genresult, REPLY_BUF_SIZE);  // Clear the buffer before readport
+	   loop++; // = loop + 1;
+           mySleep(50000); // Give enough time for replying
 
            //if (readport(wattson, genresult) <= 0)
            //     return(-2);
 	   readbytes = readport(wattson, genresult);
-
+printf("loop %u, readbytes %u genresult %c\n", loop, readbytes,genresult[0]);
            if ( genresult[0] == 'w' ) {
                 sscanf(genresult+1, "%x", &genpower);
            }
@@ -169,14 +169,14 @@ int get_current_generated_power(WATTSON wattson)
            //        return(-3); // Error in power value
 	           genpower=-3;
            }
-	   if (( readbytes == 0 ) && (loop == 100)) {
+	   if (( readbytes == 0 ) && (loop == 10)) {
 		   genpower = -2;
 		   readbytes = 1;
 	   }
 	}
         return genpower;
-}
-        /*mySleep(500000); // Give enough time for replying
+} */
+        mySleep(50000); // Give enough time for replying
     bzero(genresult, REPLY_BUF_SIZE);  // Clear the buffer before readport
 
         if (readport(wattson, genresult) <= 0)
@@ -190,7 +190,7 @@ int get_current_generated_power(WATTSON wattson)
 
         return genpower;
 }
-*/
+
 
 /********************************************************************
  * get_configuration()
@@ -253,7 +253,29 @@ int get_configuration(struct config_type *config, char *path)
 
 		if ((strcmp(token,"SERIAL_DEVICE")==0) && (strlen(val) != 0))
 		{
-			strcpy(config->serial_device_name,val);
+			strncpy(config->serial_device_name,val, DEV_NAME_SIZE);
+			config->serial_device_name[DEV_NAME_SIZE-1]='\0';
+			continue;
+		}		
+
+		if ((strcmp(token,"LOG_DIR")==0) && (strlen(val) != 0))
+		{
+			strncpy(config->logfile_dir,val, PATH_SIZE);
+			config->logfile_dir[PATH_SIZE-1]='\0';
+			continue;
+		}		
+
+		if ((strcmp(token,"HTML_DIR")==0) && (strlen(val) != 0))
+		{
+			strncpy(config->HTMLfile_dir,val, PATH_SIZE);
+			config->HTMLfile_dir[PATH_SIZE-1]='\0';
+			continue;
+		}		
+
+		if ((strcmp(token,"TEMP_DIR")==0) && (strlen(val) != 0))
+		{
+			strncpy(config->temp_dir,val, PATH_SIZE);
+			config->temp_dir[PATH_SIZE-1]='\0';
 			continue;
 		}		
 	}

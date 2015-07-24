@@ -28,6 +28,8 @@
 #define MAXRETRIES 5
 
 #define REPLY_BUF_SIZE 20
+#define DEV_NAME_SIZE 50
+#define PATH_SIZE 255
             
 typedef struct {
 	char name[50];
@@ -36,7 +38,10 @@ typedef struct {
 
 struct config_type
 {
-	char   serial_device_name[50];
+	char   serial_device_name[DEV_NAME_SIZE];
+	char   logfile_dir[PATH_SIZE];
+	char   HTMLfile_dir[PATH_SIZE];
+	char   temp_dir[PATH_SIZE];
 };
 
 struct timestamp
