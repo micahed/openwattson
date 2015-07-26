@@ -20,6 +20,7 @@ if [ $# -lt 4 ]; then
 	exit 0
 fi
 
+tmpdir=`getconf temp`
 Yest=`date +%Y-%b-%d --date=yesterday`
 All_Yest="${Yest}.00:00:00 ${Yest}.23:59:59"
 
@@ -36,9 +37,9 @@ pngfile3=$4
 #fi
 
 # Do the job
-echo "Time Used Generated Grid_Given" > /tmp/wattsonplot.tmp
-cat $logfile | awk '{ split($0, arr);print arr[2] "." arr[3] " " arr[4] " " arr[5] " " arr[5]-arr[4];}' >> /tmp/wattsonplot.tmp
+echo "Time Used Generated Grid_Given" > $tmpdir/wattsonplot.tmp
+cat $logfile | awk '{ split($0, arr);print arr[2] "." arr[3] " " arr[4] " " arr[5] " " arr[5]-arr[4];}' >> $tmpdir/wattsonplot.tmp
 
-ploticus -png -o $pngfile -pagesize 11.6,8.2 -pixsize 1024,768 -prefab chron data=/tmp/wattsonplot.tmp x=1 y=2 datefmt=yyyy-mmm-dd mode=line unittype=datetime rectangle="1 1 10 8" xrange="$All_Yest" ygrid=yes header=yes x=Time y=Used
-ploticus -png -o $pngfile2 -pagesize 11.6,8.2 -pixsize 1024,768 -prefab chron data=/tmp/wattsonplot.tmp x=1 y=2 datefmt=yyyy-mmm-dd mode=line unittype=datetime rectangle="1 1 10 8" xrange="$All_Yest" ygrid=yes header=yes x=Time y=Generated
-ploticus -png -o $pngfile3 -pagesize 11.6,8.2 -pixsize 1024,768 -prefab chron data=/tmp/wattsonplot.tmp x=1 y=2 datefmt=yyyy-mmm-dd mode=line unittype=datetime rectangle="1 1 10 8" xrange="$All_Yest" ygrid=yes header=yes x=Time y=Grid_Given
+ploticus -png -o $pngfile -pagesize 11.6,8.2 -pixsize 1024,768 -prefab chron data=$tmpdir/wattsonplot.tmp x=1 y=2 datefmt=yyyy-mmm-dd mode=line unittype=datetime rectangle="1 1 10 8" xrange="$All_Yest" ygrid=yes header=yes x=Time y=Used
+ploticus -png -o $pngfile2 -pagesize 11.6,8.2 -pixsize 1024,768 -prefab chron data=$tmpdir/wattsonplot.tmp x=1 y=2 datefmt=yyyy-mmm-dd mode=line unittype=datetime rectangle="1 1 10 8" xrange="$All_Yest" ygrid=yes header=yes x=Time y=Generated
+ploticus -png -o $pngfile3 -pagesize 11.6,8.2 -pixsize 1024,768 -prefab chron data=$tmpdir/wattsonplot.tmp x=1 y=2 datefmt=yyyy-mmm-dd mode=line unittype=datetime rectangle="1 1 10 8" xrange="$All_Yest" ygrid=yes header=yes x=Time y=Grid_Given

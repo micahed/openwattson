@@ -19,7 +19,7 @@ fi
 # Get power value into variable
 #pow=`getpower`
 #gen=`getgen`
-scriptDir=`dirname $0`
+scriptDir=`getconf scriptdir`
 
 #<META HTTP-EQUIV=\"Refresh\" CONTENT=\"60\">  
 # Write everything into file.

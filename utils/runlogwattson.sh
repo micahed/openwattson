@@ -10,7 +10,8 @@
 #
 # Author: Kary Främling, 2010
 #
-LogBase="/home/nas/wattson/wattson/wattson_log"
+#LogBase="/home/nas/wattson/wattson/wattson_log"
+LogBase=`getconf logdir`
 while [ 1 ]
 do
   today=`date +%Y_%m_%d_%A`

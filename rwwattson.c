@@ -221,6 +221,13 @@ int get_configuration(struct config_type *config, char *path)
 	char val[100] = "";
 	char val2[100] = "";
 
+	// Allocate memory and zero out the config structure.
+	config->serial_device_name=calloc(DEV_NAME_SIZE+1,1);
+	config->logfile_dir=(char *)calloc(PATH_SIZE+1,1);
+	config->HTMLfile_dir=(char *)calloc(PATH_SIZE+1,1);
+	config->temp_dir=(char *)calloc(PATH_SIZE+1,1);
+	config->script_dir=(char *)calloc(PATH_SIZE+1,1);
+
 	// First we set everything to defaults - faster than many if statements
 	strcpy(config->serial_device_name, DEFAULT_SERIAL_DEVICE);  // Name of serial device
 
@@ -254,30 +261,32 @@ int get_configuration(struct config_type *config, char *path)
 		if ((strcmp(token,"SERIAL_DEVICE")==0) && (strlen(val) != 0))
 		{
 			strncpy(config->serial_device_name,val, DEV_NAME_SIZE);
-			config->serial_device_name[DEV_NAME_SIZE-1]='\0';
 			continue;
 		}		
 
 		if ((strcmp(token,"LOG_DIR")==0) && (strlen(val) != 0))
 		{
 			strncpy(config->logfile_dir,val, PATH_SIZE);
-			config->logfile_dir[PATH_SIZE-1]='\0';
 			continue;
 		}		
 
 		if ((strcmp(token,"HTML_DIR")==0) && (strlen(val) != 0))
 		{
 			strncpy(config->HTMLfile_dir,val, PATH_SIZE);
-			config->HTMLfile_dir[PATH_SIZE-1]='\0';
 			continue;
 		}		
 
 		if ((strcmp(token,"TEMP_DIR")==0) && (strlen(val) != 0))
 		{
 			strncpy(config->temp_dir,val, PATH_SIZE);
-			config->temp_dir[PATH_SIZE-1]='\0';
 			continue;
 		}		
+
+		if ((strcmp(token,"SCRIPT_DIR")==0) && (strlen(val) != 0))
+		{
+			strncpy(config->script_dir,val, PATH_SIZE);
+			continue;
+		}
 	}
 	return (0);
 }

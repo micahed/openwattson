@@ -38,10 +38,11 @@ typedef struct {
 
 struct config_type
 {
-	char   serial_device_name[DEV_NAME_SIZE];
-	char   logfile_dir[PATH_SIZE];
-	char   HTMLfile_dir[PATH_SIZE];
-	char   temp_dir[PATH_SIZE];
+	char *serial_device_name;
+	char *logfile_dir;
+	char *HTMLfile_dir;
+	char *temp_dir;
+	char *script_dir;
 };
 
 struct timestamp

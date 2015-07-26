@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	int current_generated_power;
 
 	get_configuration(&config, argv[1]);
-
+//printf ("dev:%s\n", config.serial_device_name);
 	wattson = open_wattson(config.serial_device_name);
 
 	/* READ GENERATED CURRENT POWER */
