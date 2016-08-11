@@ -57,7 +57,7 @@ slots which all are divided to 12 two-hour slots.
 
 The number of stored days can be retrieved by command "nowd". The response
 is stored days count eg. "d02" if two days before today has been stored.
-The oldest dayslot is 01, the next 02 etc. so today√'s slot is the response
+The oldest dayslot is 01, the next 02 etc. so today√É's slot is the response
 from nowd command +1. In the example "d02" today is slot 03.
 
 Every day contains 12 two-hour slots as said before. The first slot for 
@@ -80,4 +80,10 @@ The current 5min timeslot contains "FFFE" and the timeslots which are in
 the future contain "FFFF". From this slot you see, that in the first 5 
 minutes of that time the average power usage was 0x164A watts which is 
 5706 W in decimal.
+
+The command 'nowh' uses the same format as 'nowl' but instead returns
+power generated eg.
+
+h0000,0000,0000,0000,0000,0000,0000,0000,0000,FFFE,0000,0000,0000,
+0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,77
 
